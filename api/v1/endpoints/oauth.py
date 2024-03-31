@@ -59,6 +59,5 @@ async def verify_kakao(
                             detail='Naver User Not Found')
 
     result = result.json()
-    print(result)
     id = hashlib.sha256(('naver' + str(result['response']['id'])).encode()).hexdigest()
     print(id)
