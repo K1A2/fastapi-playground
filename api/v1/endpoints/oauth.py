@@ -44,3 +44,21 @@ async def verify_kakao(
     result = result.json()
     id = hashlib.sha256(('kakao' + str(result['id'])).encode()).hexdigest()
     print(id)
+
+@router.get('/verify/naver')
+async def verify_kakao(
+        credentials: HTTPAuthorizationCredentials = Security(security),
+        db: Session = Depends(get_mariadb)):
+    async with httpx.AsyncClient() as client:
+        result = httpx.get('https://openapi.naver.com/v1/nid/me', headers={
+            'Authorization': f'Bearer {credentials.credentials}',
+        })
+
+    if result.status_code != 200:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='Naver User Not Found')
+
+    result = result.json()
+    print(result)
+    id = hashlib.sha256(('naver' + str(result['response']['id'])).encode()).hexdigest()
+    print(id)
